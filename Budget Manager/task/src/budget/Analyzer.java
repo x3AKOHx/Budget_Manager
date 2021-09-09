@@ -1,0 +1,150 @@
+package budget;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
+import java.util.TreeMap;
+
+public class Analyzer {
+
+    public static void analyzeMenu(Purchase purchase) {
+        boolean isTrue = true;
+
+        while (isTrue) {
+            System.out.println("How do you want to sort?");
+            System.out.println("1) Sort all purchases");
+            System.out.println("2) Sort by type");
+            System.out.println("3) Sort certain type");
+            System.out.println("4) Back");
+
+            Scanner sc = new Scanner(System.in);
+            int pick = sc.nextInt();
+            System.out.println();
+
+            switch (pick) {
+                case 1: {
+                    sortAll(purchase);
+                    break;
+                }
+                case 2: {
+                    sortByType(purchase);
+                    break;
+                }
+                case 3: {
+                    sortCertain(purchase);
+                    break;
+                }
+                case 4: {
+                    isTrue = false;
+                    break;
+                }
+                default: {
+                    System.out.println("Wrong input");
+                    break;
+                }
+            }
+        }
+    }
+
+    public static void sortAll(Purchase purchase) {
+        sort(purchase.getAllLists());
+    }
+
+    public static void sortByType(Purchase purchase) {
+        HashMap<String, ArrayList<String>> map = purchase.purchases;
+        TreeMap<Double, String> TreeMap = new TreeMap<>();
+        double temp = 0;
+        if (map.get("Food") != null) {
+            for (String x : map.get("Food")) {
+                temp += Double.parseDouble(x.split("\\$")[1]);
+            }
+        }
+        TreeMap.put(temp, "Food - $" + temp);
+        temp = 0;
+        if (map.get("Entertainment") != null) {
+            for (String x : map.get("Entertainment")) {
+                temp += Double.parseDouble(x.split("\\$")[1]);
+            }
+        }
+        TreeMap.put(temp, "Entertainment - $" + temp);
+        temp = 0;
+        if (map.get("Clothes") != null) {
+            for (String x : map.get("Clothes")) {
+                temp += Double.parseDouble(x.split("\\$")[1]);
+            }
+        }
+        TreeMap.put(temp, "Clothes - $" + temp);
+        temp = 0;
+        if (map.get("Other") != null) {
+            for (String x : map.get("Other")) {
+                temp += Double.parseDouble(x.split("\\$")[1]);
+            }
+        }
+        TreeMap.put(temp, "Other - $" + temp);
+        temp = 0;
+        for (String x : TreeMap.descendingMap().values()) {
+            System.out.println(x);
+        }
+        for (Double x : TreeMap.keySet()) {
+            temp += x;
+        }
+        System.out.println("Total: $" + temp);
+        System.out.println();
+    }
+
+    public static void sortCertain(Purchase purchase) {
+        System.out.println("Choose the type of purchase");
+        System.out.println("1) Food");
+        System.out.println("2) Clothes");
+        System.out.println("3) Entertainment");
+        System.out.println("4) Other");
+
+        Scanner sc = new Scanner(System.in);
+        int pick = sc.nextInt();
+        System.out.println();
+
+        switch (pick) {
+            case 1: {
+                sort(purchase.purchases.get("Food"));
+                break;
+            }
+            case 2: {
+                sort(purchase.purchases.get("Clothes"));
+                break;
+            }
+            case 3: {
+                sort(purchase.purchases.get("Entertainment"));
+                break;
+            }
+            case 4: {
+                sort(purchase.purchases.get("Other"));
+                break;
+            }
+            default: {
+                System.out.println("Wrong input");
+                break;
+            }
+        }
+    }
+
+    private static void sort(ArrayList<String> list) {
+        if (list == null || list.isEmpty()) {
+            System.out.println("The purchase list is empty!");
+        } else {
+            HashMap<Double, String> sort = new HashMap<>();
+            for (String x : list) {
+                sort.put(Double.parseDouble(x.split("\\$")[1]), x);
+            }
+            TreeMap<Double, String> map = new TreeMap<>(sort);
+            for (String x : map.descendingMap().values()) {
+                System.out.println(x);
+            }
+            double total = 0;
+            for (Double x : map.keySet()) {
+                total += x;
+            }
+            System.out.println("Total: $" + total);
+        }
+        System.out.println();
+    }
+}
