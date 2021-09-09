@@ -1,9 +1,6 @@
 package budget;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Scanner;
-import java.util.TreeMap;
+import java.util.*;
 
 public class Analyzer {
 
@@ -56,31 +53,31 @@ public class Analyzer {
         double temp = 0;
         if (map.get("Food") != null) {
             for (String x : map.get("Food")) {
-                temp += Double.parseDouble(x.split("\\$")[1]);
+                temp += Double.parseDouble(x.substring(x.lastIndexOf("$") + 1));
             }
         }
-        TreeMap.put(temp, "Food - $" + temp);
+        TreeMap.put(temp, "Food - $" + String.format("%.2f", temp));
         temp = 0;
         if (map.get("Entertainment") != null) {
             for (String x : map.get("Entertainment")) {
-                temp += Double.parseDouble(x.split("\\$")[1]);
+                temp += Double.parseDouble(x.substring(x.lastIndexOf("$") + 1));
             }
         }
-        TreeMap.put(temp, "Entertainment - $" + temp);
+        TreeMap.put(temp, "Entertainment - $" + String.format("%.2f", temp));
         temp = 0;
         if (map.get("Clothes") != null) {
             for (String x : map.get("Clothes")) {
-                temp += Double.parseDouble(x.split("\\$")[1]);
+                temp += Double.parseDouble(x.substring(x.lastIndexOf("$") + 1));
             }
         }
-        TreeMap.put(temp, "Clothes - $" + temp);
+        TreeMap.put(temp, "Clothes - $" + String.format("%.2f", temp));
         temp = 0;
         if (map.get("Other") != null) {
             for (String x : map.get("Other")) {
-                temp += Double.parseDouble(x.split("\\$")[1]);
+                temp += Double.parseDouble(x.substring(x.lastIndexOf("$") + 1));
             }
         }
-        TreeMap.put(temp, "Other - $" + temp);
+        TreeMap.put(temp, "Other - $" + String.format("%.2f", temp));
         temp = 0;
         for (String x : TreeMap.descendingMap().values()) {
             System.out.println(x);
@@ -88,7 +85,7 @@ public class Analyzer {
         for (Double x : TreeMap.keySet()) {
             temp += x;
         }
-        System.out.println("Total: $" + temp);
+        System.out.println("Total: $" + String.format("%.2f", temp));
         System.out.println();
     }
 
@@ -131,19 +128,25 @@ public class Analyzer {
         if (list == null || list.isEmpty()) {
             System.out.println("The purchase list is empty!");
         } else {
-            HashMap<Double, String> sort = new HashMap<>();
-            for (String x : list) {
-                sort.put(Double.parseDouble(x.split("\\$")[1]), x);
-            }
-            TreeMap<Double, String> map = new TreeMap<>(sort);
-            for (String x : map.descendingMap().values()) {
-                System.out.println(x);
-            }
             double total = 0;
-            for (Double x : map.keySet()) {
-                total += x;
+            int n = list.size();
+            String temp;
+            for (int i = 0; i < n; i++) {
+                for (int j = 1; j < (n - i); j++) {
+                    double x = Double.parseDouble(list.get(j - 1).substring(list.get(j - 1).lastIndexOf("$") + 1));
+                    double y = Double.parseDouble(list.get(j).substring(list.get(j).lastIndexOf("$") + 1));
+                    if (x > y) {
+                        temp = list.get(j - 1);
+                        list.set(j - 1, list.get(j));
+                        list.set(j, temp);
+                    }
+                }
+                total += Double.parseDouble(list.get(i).substring(list.get(i).lastIndexOf("$") + 1));
             }
-            System.out.println("Total: $" + total);
+            for (int i = list.size() - 1; i >= 0; i--) {
+                System.out.println(list.get(i));
+            }
+            System.out.println("Total: $" + String.format("%.2f", total));
         }
         System.out.println();
     }
